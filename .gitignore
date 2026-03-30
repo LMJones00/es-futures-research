@@ -1,0 +1,38 @@
+# Data files - never commit raw or processed trading data
+*.csv
+*.xlsx
+*.xls
+
+# Jupyter checkpoints
+.ipynb_checkpoints/
+**/.ipynb_checkpoints/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*.pyc
+
+# Credentials and environment variables
+.env
+*.key
+ibkr_credentials*
+config_local*
+
+# Virtual environments
+venv/
+.venv/
+env/
+.env/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Distribution / packaging
+dist/
+build/
+*.egg-info/
+
+# IDE
+.vscode/
+.idea/
