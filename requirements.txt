@@ -13,7 +13,10 @@ pytz
 # External market data (VIX, oil fallback)
 yfinance
 
-# Visualization (for analysis.ipynb - future)
+# Visualization (for analysis.ipynb)
 plotly
 seaborn
 matplotlib
+
+# Statistical tests (analysis.ipynb)
+scipy

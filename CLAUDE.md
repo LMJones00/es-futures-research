@@ -21,7 +21,7 @@ Run notebooks in this exact sequence:
 1. `gettingData.ipynb` — Fetches raw OHLCV bars from IBKR for ES futures
 2. `barsToCleaning.ipynb` — Merges 1-min and 1-sec bars; adds market open price, initial direction, contract location
 3. `cleaingToClean.ipynb` — Adds close prices (16:00 and 16:15); filters equal-direction rows
-4. `preparing.ipynb` — Feature engineering: direction, profitability, SDV categories, win/loss streaks
+4. `preparing.ipynb` — Feature engineering: direction, profitability, SDV categories, win/loss streaks, VIX integration
 
 ---
 
@@ -59,6 +59,9 @@ These files are **not committed to git** (excluded via .gitignore):
 | `diff_open_conLoc` | Absolute distance between `market_open_09:30` and `contract_location` |
 | `dow_win_streak` | Running consecutive wins for this time + day-of-week combination |
 | `overall_win_streak` | Running consecutive wins for this time slot across all days |
+| `vix_close` | Daily VIX closing value fetched via yfinance (forward-filled for holidays/weekends) |
+| `vix_category` | Fixed-threshold VIX band: `Low` (<15), `Moderate` (15–25), `Elevated` (25–35), `High` (>35) |
+| `vix_favorable` | `True` when VIX is 15–30 — the mean-reversion sweet spot (enough noise for reversals, not enough trend to override them) |
 
 ---
 
@@ -69,6 +72,8 @@ These files are **not committed to git** (excluded via .gitignore):
 - **SDV thresholds in preparing.ipynb** — The standard deviation bins for `open_close_diff_sdv_interval` are computed dynamically from the dataset's own mean and standard deviation. They are **not fixed values** — they shift as more data is added.
 
 - **Holiday date list in barsToCleaning.ipynb** — Hardcoded list of CME early-close or holiday dates that must be manually updated when they occur (check the CME holiday calendar each year).
+
+- **`VIX_TICKER = '^VIX'` and `categorize_vix()` in preparing.ipynb (Section 13)** — VIX thresholds (`[0, 15, 25, 35, inf]`) are **fixed absolute values**, unlike SDV bins which are computed dynamically from the dataset. `vix_favorable` uses an upper bound of **30**, not 35 — trending/panic behavior starts dominating above 30 even though the `'Elevated'` category band extends to 35 (deliberate split for analytical granularity vs. trade filter). The MultiIndex column flatten (`vix_raw.columns.get_level_values(0)`) is required for compatibility with yfinance >=0.2.x which returns multi-level columns for single-ticker downloads.
 
 ---
 
@@ -82,7 +87,8 @@ These files are **not committed to git** (excluded via .gitignore):
 
 ## Prerequisites
 
-- **IBKR TWS or IB Gateway** running on `localhost:7496` before running `gettingData.ipynb`
+- **IBKR TWS or IB Gateway** running on `localhost:7496` — **only required for `gettingData.ipynb`**. Notebooks 2–4 do not connect to IBKR.
+- **Internet access** required for `preparing.ipynb` Section 13 — fetches VIX data via `yfinance`
 - Python packages: see `requirements.txt`
 - `fixedConLocUpTo03-5-24.xlsx` must be present in the `Nadex Code/` directory
 
