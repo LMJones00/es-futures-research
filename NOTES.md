@@ -129,3 +129,36 @@ The key insight: `cumsum` of NOT-mask creates a unique ID for each consecutive r
 - **VIX** — Free via `yfinance`, no API key needed. Adds market volatility context. Going in next.
 - **Oil (CL futures)** — Via existing IBKR connection. Shows oil/ES correlation.
 - **Geopolitical sentiment** — GDELT (free) or NewsAPI (~$50/mo) for war/conflict news scoring.
+
+---
+
+## Session 3 — 2026-04-01
+
+### What We Did
+1. **Created `analysis.ipynb`** (commit `27f27dc`) — Full strategy validation notebook, 11 sections:
+   - Section 0: Setup, data load, builds `df` (bar-level) and `df_day` (1 row/day)
+   - Section 2: Core win rate with binomial test vs p=0.50, 95% CI
+   - Section 3: VIX filter validation (`vix_favorable` True vs False + by category)
+   - Section 4: Time-of-day win rates (bar-level, line + twin-axis bar count)
+   - Section 5: Day-of-week + VIX category heatmap
+   - Section 6: Volatility environment (SDV bands + box plot)
+   - Section 7: Year/month trends + rolling 90-day win rate line
+   - Section 8: Initial direction symmetry (above vs below)
+   - Section 9: Streak histograms + next-day win rate following N-game streaks
+   - Section 10: Combined best-case filter + sensitivity table (update after running)
+   - Section 11: Markdown conclusions template (fill in after running)
+
+2. **`requirements.txt`** — Added `scipy` for binomtest
+
+3. **`simplify` review** caught 3 bugs before first run:
+   - Section 2: Denominator mismatch — `philo_wins`/`money_wins` counted from all `df_day` rows but `n` was from `dropna` subset (fixed: all from `df_core = df_day.dropna(...)`)
+   - Section 9: `.shift(-1)` applied to a *filtered* series → gave next matching streak row, not next calendar day (fixed: pre-compute `daily_s['next_outcome'] = daily_s['money_made'].shift(-1)` on full sorted df, then filter)
+   - Sections 5+8: Identical heatmap annotation loops duplicated → extracted to `annotate_heatmap(rate_df, count_df, flag_threshold=None)` helper in Section 0
+
+---
+
+### Next Steps
+1. **Run `analysis.ipynb`** with real `clean.csv` — see actual win rates, fill in Section 11 conclusions
+2. Update Section 10 filter constants (`BEST_DOW`, `BEST_SDV_BANDS`, `BEST_DIRECTION`) based on findings
+3. Expand `fixedConLocUpTo03-5-24.xlsx` past 2024-03-05
+4. Update contract month in `gettingData.ipynb` (currently hardcoded `202506`)
