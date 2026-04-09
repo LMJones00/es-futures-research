@@ -5,6 +5,7 @@ ib_insync
 pandas
 numpy
 openpyxl
+pdfplumber
 
 # Async / timezone support
 nest_asyncio

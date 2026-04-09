@@ -62,7 +62,7 @@ git push -u origin master
 | HIGH | `preparing.ipynb` | 6 duplicate `determine_direction()` functions | FIXED (commit 69d5eb5) |
 | HIGH | `preparing.ipynb` | Typo: `column_name="'diff_open_conLoc"` — extra quote causes KeyError | FIXED (commit 69d5eb5) |
 | HIGH | `preparing.ipynb` | Nested for-loop streak functions — slow | FIXED (commit 69d5eb5) |
-| MED | `gettingData.ipynb` | Hardcoded contract month, dates, file names | PENDING |
+| MED | `gettingData.ipynb` | Hardcoded contract month, dates, file names | FIXED (Session 4) |
 | MED | `cleaingToClean.ipynb` | No validation if 16:00/16:15 close bars are missing | PENDING |
 | LOW | All notebooks | No data validation after each step — add row counts | PENDING |
 
@@ -161,4 +161,76 @@ The key insight: `cumsum` of NOT-mask creates a unique ID for each consecutive r
 1. **Run `analysis.ipynb`** with real `clean.csv` — see actual win rates, fill in Section 11 conclusions
 2. Update Section 10 filter constants (`BEST_DOW`, `BEST_SDV_BANDS`, `BEST_DIRECTION`) based on findings
 3. Expand `fixedConLocUpTo03-5-24.xlsx` past 2024-03-05
-4. Update contract month in `gettingData.ipynb` (currently hardcoded `202506`)
+4. ~~Update contract month in `gettingData.ipynb`~~ — done in Session 4
+
+---
+
+## Session 6 — 2026-04-08
+
+### What We Did
+1. **Created `getNadexContracts.ipynb`** — Fully automates the Nadex contract lookup that was previously done manually.
+   - Downloads daily settlement PDFs from `https://s3.amazonaws.com/market-data-prod.nadex.com/YYYYMMDD_tradingResults.pdf` (public S3, no login required)
+   - Parses PDFs with `pdfplumber` — tries table extraction first, falls back to full-text regex scan
+   - Extracts US 500 Daily binary contract strikes from Display Name (handles both `>` and `+` prefix formats)
+   - Finds the strikes immediately above and below the 09:30 market open price
+   - Writes `contract_locations.csv` (`date`, `above`, `below`) — incremental, skips already-covered dates
+   - Replaces the manual Excel file `fixedConLocUpTo03-5-24.xlsx` entirely
+
+2. **Modified `barsToCleaning.ipynb` Cell 28** — replaced `pd.read_excel("fixedConLocUpTo03-5-24.xlsx")` with `pd.read_csv("contract_locations.csv")`. Logic unchanged.
+
+3. **Added `pdfplumber` to `requirements.txt`** and installed it.
+
+### Updated Pipeline Order
+```
+0. getNadexContracts.ipynb   ← Run when new dates needed (after market close)
+1. gettingData.ipynb
+2. barsToCleaning.ipynb
+3. cleaingToClean.ipynb
+4. preparing.ipynb
+```
+
+### Note on Same-Day Contracts
+PDFs are settlement results, available after market close. For same-day live trading, you still need to look up current contracts on nadex.com manually. This script covers all historical backfill and end-of-day pipeline runs.
+
+### Next Steps
+1. **First run of `getNadexContracts.ipynb`** — verify it finds correct above/below by spot-checking one date against a screenshot
+2. Run `barsToCleaning.ipynb` end-to-end to confirm `cleaning.csv` has no NaN in `above`/`below` for recent dates
+3. Run `analysis.ipynb` with full up-to-date `clean.csv`
+4. Add validation to `cleaingToClean.ipynb` for missing 16:00/16:15 close bars
+
+---
+
+## Session 5 — 2026-04-08
+
+### What We Did
+1. **Fixed `gettingData.ipynb` Section 2** — Resolved Error 10314 ("Start Date/Time invalid") that was causing all tick requests to return 0 ticks.
+   - **Root cause 1:** `reqHistoricalTicksAsync` only accepts ONE of `startDateTime` or `endDateTime` — the old code passed both, which triggers Error 10314 regardless of format.
+   - **Root cause 2:** The `'YYYYMMDD HH:MM:SS US/Eastern'` format (which works for `reqHistoricalDataAsync`) is rejected by some TWS versions for `reqHistoricalTicksAsync`.
+   - **Fix:** Convert 09:30:00 ET to UTC using pandas (handles DST) and pass as `'YYYYMMDD-HH:MM:SS'` (dash notation). Set `endDateTime=''`. Section 2 now works correctly.
+
+### Next Steps
+1. Discuss and expand `fixedConLocUpTo03-5-24.xlsx` past 2024-03-05 (user to explain approach)
+2. Add validation to `cleaingToClean.ipynb` for missing 16:00/16:15 close bars
+3. Run `analysis.ipynb` with real `clean.csv` — fill in Section 11 conclusions
+4. Update Section 10 filter constants based on analysis findings
+
+---
+
+## Session 4 — 2026-04-02
+
+### What We Did
+1. **Remade `gettingData.ipynb`** — full rewrite with the following fixes:
+   - **Removed `nest_asyncio`** from both sections. Python 3.14 changed `asyncio.timeout()` to require being inside a Task; `nest_asyncio` broke this, causing `RuntimeError: Timeout should be used inside a task` on every run. Modern Jupyter (ipykernel ≥ 6) runs `await` natively in cells — no workaround needed.
+   - **Added CONFIG cell** at the top with all values that need updating each quarter: `CONTRACT_MONTH`, `MINUTES_END_DATE`, `MINUTES_DURATION`, `SECS_START_DATE`, `SECS_END_DATE`. Run this cell first before either section.
+   - **Updated contract month** from `202406` (June 2024) to `202506` (June 2025/current).
+   - **Removed duplicate `"09:30:00"`** entry in Section 1's `specific_times` list.
+   - **Renamed loop variable** in Section 2 from `date` to `day` (was shadowing `datetime.date`).
+   - **Cleared all stale outputs** from prior failed runs.
+
+---
+
+### Next Steps
+1. Run `analysis.ipynb` with real `clean.csv` — see actual win rates, fill in Section 11 conclusions
+2. Update Section 10 filter constants (`BEST_DOW`, `BEST_SDV_BANDS`, `BEST_DIRECTION`) based on findings
+3. Expand `fixedConLocUpTo03-5-24.xlsx` past 2024-03-05
+4. Add validation to `cleaingToClean.ipynb` for missing 16:00/16:15 close bars
