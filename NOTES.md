@@ -165,6 +165,45 @@ The key insight: `cumsum` of NOT-mask creates a unique ID for each consecutive r
 
 ---
 
+## Session 7 — 2026-04-09
+
+### What We Did
+
+1. **Fixed `getNadexContracts.ipynb` pdfminer warning spam** — Added `logging.getLogger('pdfminer').setLevel(logging.ERROR)` to imports cell. The "Data-loss while decompressing corrupted data" messages are harmless internal PDF noise; suppressing them makes progress output readable.
+
+2. **Fixed `getNadexContracts.ipynb` performance — 3 rounds of optimization:**
+   - **Round 1:** Removed slow `extract_table()` pass (Pass 1). Kept text-only regex scan (Pass 2). Table extraction was taking minutes per PDF on large settlement PDFs.
+   - **Round 2 (via `/simplify`):** Replaced sequential fetch loop with `ThreadPoolExecutor(max_workers=12)`. S3 HTTP requests are I/O-bound — 12 parallel workers give ~10x speedup. Also switched from `.loc[]` DataFrame lookup per date to O(1) `dict` lookup.
+   - **Other `/simplify` fixes:** Removed unused `PERIOD_FILTER` from CONFIG (4:15PM expiry already uniquely identifies Daily contracts); added per-date warnings when only one of `above`/`below` is found (asymmetric bracket); tightened docstrings.
+
+3. **Installed Claude Code plugins** (user-invocable skills):
+   - `/simplify` → `code-simplifier` — runs parallel review agents for bugs/quality/efficiency. Validated this session.
+   - `commit-commands` — `/commit`, `/push`, `/pr` shortcuts
+   - `claude-md-management` — audits/updates CLAUDE.md
+   - `hookify` — creates hook rules for automated behaviors
+
+4. **Pushed all pending commits to GitHub** — 5 sessions of local-only commits (sessions 2–6) were never pushed. All 7 commits are now at `https://github.com/LMJones00/nadex-strategy`.
+
+5. **Added Session Protocol to `CLAUDE.md`** — Claude now automatically stages, commits, and pushes at the end of every session. No need to ask.
+
+### Current State (End of Session)
+
+`getNadexContracts.ipynb` is **currently running** the parallel fetch cell. Output before context clear:
+```
+2024-03-11  open=5177.75  below=5169.0  above=5181.0
+2024-03-12  open=5206.25  below=5203.0  above=5215.0
+```
+The run should complete quickly with 12 parallel workers. Once it finishes, `contract_locations.csv` will cover all dates in `GoodOldGoodOld.csv`.
+
+### Next Steps
+1. **Verify `getNadexContracts.ipynb` output** — spot-check one date (e.g. 2024-03-11: below=5169, above=5181) against the Nadex website or screenshots
+2. **Run `barsToCleaning.ipynb`** end-to-end — confirm `cleaning.csv` has no NaN in `above`/`below` for recent dates
+3. **Run `analysis.ipynb`** with full up-to-date `clean.csv` — fill in Section 11 conclusions
+4. **Update Section 10 filter constants** (`BEST_DOW`, `BEST_SDV_BANDS`, `BEST_DIRECTION`) based on analysis findings
+5. **Add validation to `cleaingToClean.ipynb`** for missing 16:00/16:15 close bars
+
+---
+
 ## Session 6 — 2026-04-08
 
 ### What We Did
