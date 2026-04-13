@@ -1,5 +1,42 @@
 # Project Notes
 
+## Session 11 — 2026-04-13
+
+### What We Did
+
+1. **Fixed `analysis.ipynb` — broken f-string in `annotate_heatmap`**
+   - The line `annot.loc[r, c] = f'{val:.0%}{flag}\n({n_val:.0f})'` had a literal newline character inside the f-string (split across two JSON source entries in the notebook), making it a syntax error.
+   - Fixed by replacing the literal newline with `\n` (the two-character escape sequence). Heatmap annotations will still show `{pct}` on one line and `({N})` below it — behavior unchanged.
+   - Pylance error: "String literal is unterminated" at line 45.
+
+2. **Fixed `barsToCleaning.ipynb` — bad merge keys**
+   - Cell 6 merged `barsCombined` (1-min bars) with `secs` (1-sec bars) using `on=['date', 'open', 'high', 'low', 'close', 'volume', 'average', 'barCount', 'time']`.
+   - `NewGoodOldGoodOld.csv` only has `['date', 'open', 'high', 'low', 'close', 'volume', 'time']` — no `average` or `barCount` columns.
+   - Fixed by removing `'average'` and `'barCount'` from the merge keys. Those columns survive the outer merge as NaN for 1-sec rows, which is correct.
+   - Runtime error: `KeyError: 'average'`.
+
+3. **Ran pipeline through `cleaingToClean.ipynb`** — `check_close_bar` produced expected warnings:
+   - 25 dates missing both 16:15 and 16:00 close bars.
+   - 17 are confirmed holidays or CME early-close days (Memorial Day, Juneteenth, Independence Day, Labor Day, Thanksgiving, MLK Day, Presidents' Day, July 3 early-close, Black Friday, Christmas Eve).
+   - 8 are suspected IBKR data gaps (2024-06-17, 2024-06-18, 2024-07-16, 2024-07-30, 2024-08-13, 2024-08-27, 2024-12-16, 2024-12-17) with no obvious holiday explanation.
+   - Both close columns (`market_close_16:15`, `market_reg_close_16:00`) are NaN for the same 25 dates → those rows will be dropped by `dropna()` in analysis. Not a blocker.
+
+4. **Confirmed Pylance false positive in `cleaingToClean.ipynb`** — `"cleaning" is not defined` (severity 4 warning). `check_close_bar` references `cleaning` as a global defined in a prior cell; Pylance can't trace cross-cell state. No fix needed.
+
+### Current State (End of Session 11)
+
+- `cleaning.csv` — produced by `barsToCleaning.ipynb` ✓
+- `clean.csv`, `equal_rows.csv`, `open_rows.csv` — produced by `cleaingToClean.ipynb` ✓
+- **Next:** Run `preparing.ipynb` (needs internet for VIX via yfinance), then `analysis.ipynb`
+
+### Next Steps
+1. Run `preparing.ipynb` — feature engineering, VIX integration (internet required)
+2. Run `analysis.ipynb` — review all 11 sections
+3. Update Section 10 filter constants (`BEST_DOW`, `BEST_SDV_BANDS`, `BEST_DIRECTION`) from analysis output
+4. Fill in Section 11 conclusions table with real win rates and recommendation
+
+---
+
 ## Session 1 — 2026-03-30
 
 ### What We Did
