@@ -118,3 +118,8 @@ These files are **not committed to git** (excluded via .gitignore):
 - Weekends are filtered out at data fetch time
 - The pipeline processes **weekdays only**
 - Column names use snake_case; special columns with times use colons (e.g., `market_open_09:30`)
+
+## Rules
+- Write in plain, clear language
+- Ask clarifying questions before making assumptions
+- When you are unsure, say so

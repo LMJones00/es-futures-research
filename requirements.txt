@@ -1,11 +1,14 @@
 # IBKR API
 ib_insync
 
+# HTTP requests
+requests
+
 # Data manipulation
 pandas
 numpy
 openpyxl
-pdfplumber
+pypdfium2
 
 # Async / timezone support
 nest_asyncio
