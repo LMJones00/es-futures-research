@@ -18,6 +18,7 @@ socket.setdefaulttimeout(15)  # covers SSL handshake, which requests timeout= mi
 
 PRODUCT_FILTER = "US 500"
 EXPIRY_FILTER  = "4:15PM"
+TYPE_FILTER    = "Binary Daily"   # exclude Weekly binary and Spread/Knock-Out contracts
 _STRIKE_RE = re.compile(r'US 500[^>+\d]*[>+]([\d]{4,5}(?:\.\d+)?)')
 
 
@@ -48,7 +49,7 @@ def main():
         textpage.close()
         page.close()
         for line in text.splitlines():
-            if PRODUCT_FILTER not in line or EXPIRY_FILTER not in line:
+            if PRODUCT_FILTER not in line or EXPIRY_FILTER not in line or TYPE_FILTER not in line:
                 continue
             m = _STRIKE_RE.search(line)
             if m:
