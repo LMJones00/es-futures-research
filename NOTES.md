@@ -1,5 +1,95 @@
 # Project Notes
 
+## Session 13 — 2026-04-13
+
+### What We Did
+
+1. **Discussed binary pricing vs. directional edge**
+   - Raw win rate (60.6–76.9%) looks strong but Nadex binary pricing absorbs it.
+   - Breakeven rule: at win rate W%, you need to buy the binary for < W×$1. At 70%, binary must cost < $70.
+   - On Wide+Reversal days, 84% of days are already past the contract by 10am → binary priced at ~$62–75 (ITM).
+   - At Strong drift 69.8% win rate: breakeven price is $70. If ITM binary is $75+, EV is negative.
+   - Two viable exits: (a) enter early (~9:30–9:45) while binary is fairly priced (~$50), or (b) switch to ES/MES futures where no pricing penalty exists.
+
+2. **Discussed streak-based position sizing**
+   - Streak data from Section 9 shows no reliable signal — after a 4-game loss streak, win rate is 44%; after 5 losses it drops to 21%. Small samples (N=8–28), noise not signal.
+   - "Martingale-lite" on the 127-day subset would require computing streaks *within* the filter — and sample sizes would be even thinner.
+
+3. **Added Section 15 — Binary Entry Price Model** (cells 70–74):
+   - **15a:** Maps `progress_ratio` to estimated 10am binary entry price (5-tier model, conservative/buyer-favorable)
+   - **15b:** P&L summary by filter tier — compares Breakeven Price vs Avg Estimated Price
+   - **15c:** Price sensitivity table — EV at $45–$85 entry prices for each filter; plus line chart
+   - **Interpretation cell:** Explains the two actionable paths (early entry vs futures)
+
+### Key Finding
+
+| Filter | Win Rate | Breakeven Price |
+|---|---|---|
+| Wide+Rev (all 127) | 60.6% | $61 |
+| Strong drift | 69.8% | $70 |
+| Strong + non-Q4 | 76.1% | $76 |
+| Strong + non-Q4 + not Thu | 76.9% | $77 |
+
+The edge is real directionally. Profitability on Nadex binaries depends entirely on whether you can buy below the breakeven price. Most 10am entries on ITM binaries are priced at $62–75 — borderline or negative EV. **Early entry or futures is the more direct path to capturing the edge.**
+
+### Next Steps
+1. **Run Section 15** (cells 71–73) — need full Sections 0–14 run first; see actual P&L and price sensitivity numbers
+2. **Consider futures path** — map entry rule to ES/MES: same Wide+Reversal+Strong drift signal, enter short/long at 10am, fixed stop and target
+3. **Build entry checklist** — exact thresholds for a trading rulebook (wide open > 18pts, drift > 16pts, not Q4, not Thursday)
+
+---
+
+## Session 12 — 2026-04-13
+
+### What We Did
+
+1. **Fixed `analysis.ipynb` — streak columns missing from `df_day`**
+   - `overall_win_streak`, `overall_loss_streak`, `dow_win_streak`, `dow_loss_streak` exist in `clean.csv` but were not listed in `DAY_COLS` in cell 4 — so `df_day` never had them.
+   - Fixed by adding all four columns to `DAY_COLS`. Section 9 (streak analysis) now runs correctly.
+
+2. **Ran full pipeline** — `preparing.ipynb` then `analysis.ipynb` Sections 0–11. All ran cleanly.
+
+3. **Core analysis results (Sections 0–11):**
+   - Tradeable win rate: **37.0%** (p≈1.0 — no edge on raw signal)
+   - Philosophical win rate: **41.8%**
+   - Strike cost gap: **4.9%**
+   - No filter combination (VIX, SDV, day-of-week) exceeded 50%
+   - Best case (VIX fav + SDV tight): 43.9% on 75 trades/yr
+
+4. **Added Section 12 — Early-Session Signal Analysis** (cells 38–52):
+   - **12a:** Price range and max-away analysis (first 30 mins, all 507 days)
+   - **12b:** Volume spike analysis (145-day subset only — Apr–Nov 2024)
+   - **12c:** Combined signal — tight/wide open × drift direction
+   - **12d:** Triple filter — wide open + early reversal + close to contract location
+
+### Key Finding
+
+The 37% overall win rate was masking two populations:
+
+| Condition | Win rate | N |
+|---|---|---|
+| Wide open + early reversal | **60.6%** | 127 |
+| Wide open, drift confirms | 26.0% | 127 |
+| Tight open + early reversal | 43.2% | 95 |
+| Tight open, drift confirms | 29.1% | 158 |
+
+**Definitions:**
+- **Wide open** = first-30-min price range > median (≈0.351% of open price, ~18pts on 5200 open)
+- **Early reversal** = net price drift in first 30 mins is already pulling back against initial direction
+- **Max-away** = how far price moved away from contract location in first 30 mins; clear monotonic decay (54.9% → 25.5% from closest to furthest quintile)
+
+**Practical implication:** Wait until ~10:00 before entering. If the open was volatile AND price is already pulling back, that's the setup. Don't enter when the market is still running with the initial direction at 10:00.
+
+Section 12d (triple filter adding distance-from-contract-location) was added but not yet evaluated — run it next session.
+
+### Next Steps
+1. Run Section 12d and review results
+2. Define exact entry rule thresholds as a trading checklist
+3. Update Section 10 filter constants and Section 11 conclusions
+4. Decide whether to pursue news sentiment (n8n) as an additional signal layer
+
+---
+
 ## Session 11 — 2026-04-13
 
 ### What We Did
