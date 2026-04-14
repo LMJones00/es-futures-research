@@ -1,5 +1,47 @@
 # Project Notes
 
+## Session 14 — 2026-04-14
+
+### What We Did
+
+1. **Fixed SyntaxError in `analysis.ipynb` Cell 89 (Section 19b)**
+   - A literal newline character was embedded inside a single-quoted f-string in `ax.set_title(...)`, split across two JSON source entries. Caused `SyntaxError: unterminated f-string literal` even on Python 3.14.
+   - Fixed by merging the two source lines and replacing the literal newline with `\n` (the two-character escape sequence). All 91 cells now pass `ast.parse()`.
+
+2. **Reviewed Section 19 results — OTM contract win rate:**
+   - OTM strike = near-money contract ± 12 pts (one Nadex daily interval further in trade direction)
+   - Best filter (Strong drift + non-Q4 + not-Thu): **66.7% OTM win rate** on 39 days
+   - EV at realistic OTM entry prices: **+$17 to +$47/trade** (vs +$1.9/trade for near-money)
+   - Median close is 18.5 pts past the near-money contract; OTM is only 12 pts further — most winning days already clear the OTM bar
+   - Critical unknown: actual Nadex OTM prices at 10am on signal days unverified — must observe live before trading
+
+3. **Reviewed Section 17 results — Intraday retracement:**
+   - 100% of the 39 best-signal days had some retrace past the contract level after 10am
+   - 76.9% still won despite those retraces — deep intraday counter-moves are normal, not predictive of losses
+   - Median retrace: 21.2 pts (350% of open-to-contract gap); mean 33.9 pts
+   - **Key implication:** Cannot use a stop at the contract level for futures — would stop out 100% of trades. Need MAE analysis to find a viable stop level.
+
+4. **Reviewed Section 18 results — Pre-market VIX predictability:**
+   - VIX r=0.685 with first-30-min range (strong predictor of morning volatility)
+   - Elevated VIX (25–35) on calendar-passing days: 29.2% chance of best-signal day (4x baseline)
+   - Low VIX (<15): 2.8% — mostly skip. Moderate (15–25): 13.5% — watch normally.
+
+5. **Updated `CLAUDE.md`** — added Sections 17–19 findings, updated cell count (79→91), updated execution decision to reflect OTM binary as a viable second path alongside futures.
+
+6. **Wrote Section 19 interpretation** (cell 90) — EV comparison table, OTM decision framework, live-verification requirement for Nadex pricing.
+
+### Key Finding
+
+OTM binary changes the Nadex viability picture significantly. Near-money was +$1.9/trade (not worth it). OTM at realistic entry prices is +$17 to +$47/trade — but hinges on unverified live Nadex pricing.
+
+### Next Steps
+1. **Section 20: MAE/MFE stop-loss analysis** — uses bar-level `df` on 39 best-signal days to find viable stop placement for ES/MES futures. Produces stop-sweep EV table. This is the priority.
+2. **Live signal script** — Python script to run at 10am daily: checks range width, drift magnitude, direction, fires alert if all conditions met.
+3. **Paper trade + OTM price observation** — log actual Nadex OTM prices on signal days to verify the $20–50 assumption.
+4. **Resume update** — user to attach resume; Claude to update it based on this project's findings and technical work.
+
+---
+
 ## Session 13 — 2026-04-13
 
 ### What We Did

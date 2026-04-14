@@ -90,7 +90,7 @@ These files are **not committed to git** (excluded via .gitignore):
 
 ## Analysis Results & Current Hypothesis
 
-`analysis.ipynb` has been fully run (507 days, 2024-03-11 → 2026-04-09). Currently has **79 cells** (Sections 0–16). Key findings:
+`analysis.ipynb` has been fully run (507 days, 2024-03-11 → 2026-04-09). Currently has **91 cells** (Sections 0–19). Key findings:
 
 - **Raw strategy has no edge:** Tradeable win rate 37.0%, philosophical 41.8%, p≈1.0
 - **No filter combination (VIX, SDV, DOW) breaks 50%** — best case (VIX fav + SDV tight) = 43.9%
@@ -126,6 +126,36 @@ These files are **not committed to git** (excluded via .gitignore):
   - P&L: 9:40 entry all=-$434; 9:40+non-Q4+not Thu=-$162; 10am+non-Q4+not Thu=-$87
   - Early entry does NOT rescue Nadex EV — Strong drift filter (the key edge concentrator) cannot be confirmed before 10am
 
+- **Section 17 — Intraday retracement on best-signal days (39 days):**
+  - 100% of best-signal days had SOME intraday retrace past the contract level after 10am
+  - Win rate on crossback days: 76.9% (same as overall — deep retraces do not predict losses)
+  - Median retrace: 21.2 pts (350% of open-to-contract gap); mean 33.9 pts — extreme intraday swings
+  - Distribution: 30/39 days had retraces >150% of gap — most winners see violent intraday counter-moves before closing in the winning direction
+  - **Key implication for futures:** Cannot use a trailing stop at the contract level — would be stopped out 100% of the time. Must hold to close OR use a very wide stop. MAE analysis (Section 20) is the critical next step.
+
+- **Section 18 — Pre-market predictability (VIX as signal predictor):**
+  - VIX (prior close) vs first-30-min range: Pearson r=0.685 (p<0.0001) — strong predictor of morning volatility
+  - Signal rate by VIX on calendar-passing (non-Q4, non-Thu) days:
+    - Low VIX (<15): 2.8% chance of best-signal day (skip or low attention)
+    - Moderate VIX (15–25): 13.5% (~2x baseline of 7.7%)
+    - Elevated VIX (25–35): 29.2% (~4x baseline) — prime watching zone
+    - High VIX (>35): 40.0% (N=5, tiny sample)
+  - VIX predicts whether morning will be wide; it cannot predict whether price will *reverse*. Use for attention-sizing, not as an entry filter.
+
+- **Section 19 — OTM contract win rate (one Nadex interval = 12 pts further):**
+  - OTM win rates by filter:
+
+    | Filter | NM win% | OTM win% | Median close past NM |
+    |---|---|---|---|
+    | Wide + Reversal (all 127) | 60.6% | 55.1% | 15.5 pts |
+    | Strong drift (63) | 69.8% | 63.5% | 17.0 pts |
+    | Strong + non-Q4 (46) | 76.1% | 67.4% | 19.4 pts |
+    | Strong + non-Q4 + not-Thu (39) | 76.9% | 66.7% | 18.5 pts |
+
+  - EV at realistic OTM entry prices (best filter, 66.7% win rate): +$46.7 at $20 entry, +$16.7 at $50 entry. Breakeven at $66.70.
+  - **Why OTM holds up:** Median close is 18.5 pts past the near-money strike; OTM strike is only 12 pts further — most winning days clear the OTM bar anyway.
+  - **Critical unknown:** Actual Nadex OTM prices at 10am on signal days are unverified. EV table assumes $20–50. Must observe live prices on signal days before committing capital.
+
 **The refined entry signal (confirmed):** Enter only if all 3 conditions met at ~10:00am:
 1. First-30-min range was **wide** (> median ≈0.351% of open price, ~18–19 pts on ES at 5300)
 2. Price is already **drifting back** against initial direction (early reversal)
@@ -133,7 +163,12 @@ These files are **not committed to git** (excluded via .gitignore):
 
 Optional calendar filters (confirmed helpful, but thin samples): avoid Q4 (Oct–Dec), avoid Thursday.
 
-**Execution decision (resolved — favor futures):** Nadex binary pricing captures nearly all directional edge. Even the strictest filter (Strong+non-Q4+not Thu, 76.9%) yields only +$75 over 2.1 years with conservative price estimates. ES/MES futures are the clear path forward — no pricing penalty, full edge translates to P&L directly.
+**Execution decision (updated — two viable paths):**
+- **Near-money Nadex binary:** +$1.9/trade on best filter. Barely above breakeven; not worth it unless entry prices are consistently below $75.
+- **OTM Nadex binary (12 pts further):** 66.7% win rate, massive positive EV at realistic OTM prices. Needs live price verification before trading.
+- **ES/MES futures:** No pricing penalty. Full directional edge (76.9%) translates directly to P&L. Requires stop-loss analysis (Section 20 — not yet run) to determine risk/reward and confirm viability.
+
+**Next analysis priority — Section 20: MAE/MFE stop-loss analysis.** Uses bar-level `df` on the 39 best-signal days to compute Maximum Adverse Excursion (how far the trade goes against you intraday) and Maximum Favorable Excursion. Determines where to place stops for ES/MES futures and produces a stop-sweep EV table.
 
 ---
 
