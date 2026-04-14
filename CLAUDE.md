@@ -90,7 +90,7 @@ These files are **not committed to git** (excluded via .gitignore):
 
 ## Analysis Results & Current Hypothesis
 
-`analysis.ipynb` has been fully run (507 days, 2024-03-11 → 2026-04-09). Currently has **70 cells** (Sections 0–14). Key findings:
+`analysis.ipynb` has been fully run (507 days, 2024-03-11 → 2026-04-09). Currently has **79 cells** (Sections 0–16). Key findings:
 
 - **Raw strategy has no edge:** Tradeable win rate 37.0%, philosophical 41.8%, p≈1.0
 - **No filter combination (VIX, SDV, DOW) breaks 50%** — best case (VIX fav + SDV tight) = 43.9%
@@ -113,11 +113,18 @@ These files are **not committed to git** (excluded via .gitignore):
   - Mid-late month (days 15–21) + strong drift = 80.0% on 20 days (N too small, treat as directional hint)
   - Within non-Q4: Friday 100% (N=7), Wednesday 83.3% (N=6), Monday 78.6% (N=14) — small samples
 
-- **Section 15 — Binary entry price model (added, needs run):**
-  - Maps `progress_ratio` → estimated 10am binary price (5 tiers: $28–$75)
-  - Breakeven rule: win rate W% requires buying binary below $W to have positive EV
-  - Sensitivity table: EV at each $5 price increment from $45–$85, by filter tier
-  - Key conclusion: Strong drift breakeven = $70; ITM binaries at 10am estimated $62–75 → borderline EV
+- **Section 15 — Binary entry price model (run):**
+  - Mean estimated 10am entry price: **$68** (median $75); 74% of Wide+Reversal days are Deep ITM (>150% past contract)
+  - P&L by filter: Wide+Rev all=-$986 total; Strong drift=-$325; Strong+non-Q4=**+$50** (~+$1.1/trade); Strong+non-Q4+not Thu=**+$75** (~+$1.9/trade)
+  - Verdict: Nadex pricing absorbs nearly all the edge. Only the two strictest filters clear breakeven, and barely.
+  - Sensitivity table: Strong drift positive EV only at entry ≤$70; Strong+non-Q4 positive at ≤$80.
+
+- **Section 16 — Early entry signal (9:40/9:45) run:**
+  - Price savings: 9:40 entry mean ~$59 (saves ~$9 vs 10am); 9:45 entry mean ~$62 (saves ~$6)
+  - Signal precision: 9:40 reversal → 10am drift holds only 69.3% of the time (31% false positives)
+  - Win rate drops to 55.9% at 9:40 (vs 60.6% at 10am) — price savings offset by lower win rate
+  - P&L: 9:40 entry all=-$434; 9:40+non-Q4+not Thu=-$162; 10am+non-Q4+not Thu=-$87
+  - Early entry does NOT rescue Nadex EV — Strong drift filter (the key edge concentrator) cannot be confirmed before 10am
 
 **The refined entry signal (confirmed):** Enter only if all 3 conditions met at ~10:00am:
 1. First-30-min range was **wide** (> median ≈0.351% of open price, ~18–19 pts on ES at 5300)
@@ -126,9 +133,7 @@ These files are **not committed to git** (excluded via .gitignore):
 
 Optional calendar filters (confirmed helpful, but thin samples): avoid Q4 (Oct–Dec), avoid Thursday.
 
-**Execution decision (open):** On Wide+Reversal days, 84% already have price past the contract by 10am → binary priced as ITM ($62–75). Breakeven for Strong drift = $70. Two viable paths:
-1. **Early entry (9:30–9:45):** Binary fairly priced at ~$50. Lose 10am confirmation signal; gain much better EV.
-2. **ES/MES futures:** No pricing penalty. Full directional edge translates to P&L directly. Preferred path for future development.
+**Execution decision (resolved — favor futures):** Nadex binary pricing captures nearly all directional edge. Even the strictest filter (Strong+non-Q4+not Thu, 76.9%) yields only +$75 over 2.1 years with conservative price estimates. ES/MES futures are the clear path forward — no pricing penalty, full edge translates to P&L directly.
 
 ---
 
