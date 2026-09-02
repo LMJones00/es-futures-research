@@ -1,5 +1,27 @@
 # Project Notes
 
+## Session 15 — 2026-09-02 (exploratory re-analysis, first session since April)
+
+### What We Did
+
+1. **Rebuilt the day table from `cleaning.csv` and replicated the prior headline** (61.3% / 70.3% / 76.6% / 77.5% vs documented 60.6% / 69.8% / 76.1% / 76.9%).
+2. **Showed the 76.9% is a head-start artifact.** On every "strong drift" day price was already past the near-money strike at 10:00 (median 20 pts). Traded as futures from the 10:00 price the same days win 50–52% with mean −1 to −7 pts. No stop level helps. Section 20 (MAE/MFE) is moot.
+3. **Found two data bugs:** 21 days (Mar–Apr 2024) scored against the previous day's open because pre-market bars inherit a forward-filled open; "initial direction" is the 09:30:01 tick on 432 days.
+4. **Tested a new candidate — fade the overnight gap from 10:00.** ES 2-yr: +5.4 pts/day, t = 2.8, selection-adjusted p < 0.01. Then falsified it: SPY 1999–2026 t = 0.4 (13/28 years positive); SPY on the same 467 dates reproduces ES (r = 0.92); Apr–Sep 2026 out-of-sample −10 bp/day, negative every month; 2025 was the best year since 1999 for that rule.
+5. **Checked the long-history split:** SPY overnight +3.4 bp/day (t = 4.0) vs intraday +0.9 (t = 0.75). The documented index edge is overnight — the mirror of this project's frame.
+6. Added `reanalysis/` (5 scripts + `run_all.py`, ~3 min end to end) and `reference/exploration-2026-09-02.md`; updated `CONTEXT.md` and `CLAUDE.md`.
+
+### Key Finding
+
+Score a signal from the price you can trade at, not from the open — and test every candidate on 25 years of free daily data before any intraday work. Two years of intraday data cannot tell a regime from an edge.
+
+### Next Steps
+1. Retire the 76.9% headline and the futures path; reword the resume line to "built, found, falsified".
+2. If the pipeline is rerun: set `market_open_09:30` per date (no ffill) and define initial direction at a fixed clock time.
+3. Any new idea: SPY/ES daily-history test + permutation test first (`reanalysis/04_spy_25yr_history.py` is the template).
+
+---
+
 ## Session 14 — 2026-04-14
 
 ### What We Did
@@ -38,7 +60,7 @@ OTM binary changes the Nadex viability picture significantly. Near-money was +$1
 1. **Section 20: MAE/MFE stop-loss analysis** — uses bar-level `df` on 39 best-signal days to find viable stop placement for ES/MES futures. Produces stop-sweep EV table. This is the priority.
 2. **Live signal script** — Python script to run at 10am daily: checks range width, drift magnitude, direction, fires alert if all conditions met.
 3. **Paper trade + OTM price observation** — log actual Nadex OTM prices on signal days to verify the $20–50 assumption.
-4. **Resume update** — user to attach resume; Claude to update it based on this project's findings and technical work.
+4. ~~**Resume update**~~ — COMPLETE. ES Futures section fully rewritten with real metrics; GitHub repo renamed to `es-futures-research` and linked in resume.
 
 ---
 
@@ -187,37 +209,9 @@ Nadex (the binary options platform this project was originally built for) **is s
 
 ---
 
-### How to Push to GitHub (Fix for Terminal Error)
+### GitHub Repository
 
-The `!` prefix only works inside the **Claude Code chat input**, not in a regular terminal window. For a regular terminal (PowerShell or Command Prompt), run these commands directly:
-
-**Step 1 — Check if GitHub CLI is installed:**
-```
-gh --version
-```
-
-If you get an error, install it from: https://cli.github.com
-
-**Step 2 — Authenticate (one time only):**
-```
-gh auth login
-```
-Follow the prompts to log in to GitHub.
-
-**Step 3 — Create the repo and push:**
-```
-cd "C:\Users\lmjsp\Desktop\Claude Code Test\Nadex Code"
-gh repo create nadex-strategy --private --source . --push
-```
-
-If you prefer to skip the CLI and use the GitHub website:
-1. Go to github.com → New repository → name it `nadex-strategy` → Private → Create
-2. Then in your terminal run:
-```
-cd "C:\Users\lmjsp\Desktop\Claude Code Test\Nadex Code"
-git remote add origin https://github.com/YOUR_USERNAME/nadex-strategy.git
-git push -u origin master
-```
+Repo is live at **https://github.com/LMJones00/es-futures-research** (renamed from `nadex-strategy` in Session 15 — April 2026). Already authenticated via GitHub CLI. To push: `git push origin master` from the `Nadex Code/` directory.
 
 ---
 
@@ -351,7 +345,7 @@ The key insight: `cumsum` of NOT-mask creates a unique ID for each consecutive r
    - `claude-md-management` — audits/updates CLAUDE.md
    - `hookify` — creates hook rules for automated behaviors
 
-4. **Pushed all pending commits to GitHub** — 5 sessions of local-only commits (sessions 2–6) were never pushed. All 7 commits are now at `https://github.com/LMJones00/nadex-strategy`.
+4. **Pushed all pending commits to GitHub** — 5 sessions of local-only commits (sessions 2–6) were never pushed. All 7 commits are now at `https://github.com/LMJones00/es-futures-research`.
 
 5. **Added Session Protocol to `CLAUDE.md`** — Claude now automatically stages, commits, and pushes at the end of every session. No need to ask.
 

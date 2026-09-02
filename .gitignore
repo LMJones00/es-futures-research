@@ -36,3 +36,6 @@ build/
 # IDE
 .vscode/
 .idea/
+
+# Re-analysis intermediate outputs
+reanalysis/_out/
