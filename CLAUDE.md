@@ -14,7 +14,7 @@ the day opposite its initial move after the 09:30 ET open. Research pipeline, **
 | Path | What it holds |
 |------|----------------|
 | `CONTEXT.md` | Strategy, pipeline order, where things stand (2026-09-02 verdict), what to avoid |
-| `reference/exploration-2026-09-02.md` | The re-analysis: head-start fallacy, gap-fade falsification, data bugs, next rules |
+| `reference/exploration-2026-09-02.md` | The re-analysis: head-start fallacy, gap-fade falsification, data bugs, next rules (`.html` twin = same content with charts; open in a browser) |
 | `reference/analysis-findings.md` | Original Section 12–19 results (Apr 2026) — superseded, kept for the record |
 | `reference/data-dictionary.md` | Pipeline file table + every column definition + conventions |
 | `reference/technical-notes.md` | Magic numbers, IBKR quirks, known limitations, prerequisites |

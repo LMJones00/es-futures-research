@@ -1,0 +1,352 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Head-Start Verdict</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  :root{
+    --ground:#F2F4F6; --surface:#FFFFFF; --ink:#16202B; --muted:#5C6B7A; --rule:#D5DBE2; --rule-soft:#E6EAEF;
+    --artifact:#B8412F; --artifact-soft:rgba(184,65,47,.12);
+    --hold:#1E6E63; --hold-soft:rgba(30,110,99,.13);
+    --caution:#9A6A12;
+    --display:"Newsreader",Georgia,"Times New Roman",serif;
+    --body:"IBM Plex Sans","Segoe UI",Helvetica,Arial,sans-serif;
+    --mono:"IBM Plex Mono",Consolas,"Courier New",monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ground:#12171D; --surface:#1A2129; --ink:#E4E9EE; --muted:#9AA7B4; --rule:#2B343E; --rule-soft:#232B34;
+      --artifact:#E06A55; --artifact-soft:rgba(224,106,85,.16);
+      --hold:#4FB3A3; --hold-soft:rgba(79,179,163,.16);
+      --caution:#D4A54A;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ground:#12171D; --surface:#1A2129; --ink:#E4E9EE; --muted:#9AA7B4; --rule:#2B343E; --rule-soft:#232B34;
+    --artifact:#E06A55; --artifact-soft:rgba(224,106,85,.16);
+    --hold:#4FB3A3; --hold-soft:rgba(79,179,163,.16);
+    --caution:#D4A54A;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--ground);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased}
+  .page{max-width:1040px;margin:0 auto;padding:48px 24px 72px}
+  .prose{max-width:66ch}
+  .eyebrow{font-family:var(--body);font-size:.72rem;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin:0 0 10px}
+  h1{font-family:var(--display);font-weight:500;font-size:clamp(2.1rem,4.6vw,3.1rem);line-height:1.08;letter-spacing:-.01em;margin:0 0 14px;text-wrap:balance;max-width:20ch}
+  .lede{font-size:1.12rem;line-height:1.5;color:var(--ink);margin:0 0 8px;max-width:60ch}
+  .meta{font-family:var(--mono);font-size:.8rem;color:var(--muted);margin:0 0 36px}
+  h2{font-family:var(--display);font-weight:500;font-size:1.65rem;line-height:1.2;margin:0 0 12px;text-wrap:balance}
+  h3{font-family:var(--body);font-weight:600;font-size:1rem;margin:22px 0 8px}
+  p{margin:0 0 14px}
+  section{padding:40px 0 8px;border-top:1px solid var(--rule)}
+  section:first-of-type{border-top:0;padding-top:0}
+  .verdicts{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:0 0 44px}
+  .tile{background:var(--surface);border:1px solid var(--rule);padding:18px 20px 16px;display:flex;flex-direction:column;gap:6px}
+  .tile .label{font-size:.72rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+  .tile .figure{font-family:var(--mono);font-size:1.45rem;font-weight:500;line-height:1.1;font-variant-numeric:tabular-nums;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+  .tile .figure .arrow{font-family:var(--body);font-size:1rem;color:var(--muted)}
+  .tile .figure .bad{color:var(--artifact)}
+  .tile .figure .good{color:var(--hold)}
+  .tile .cap{font-size:.86rem;color:var(--muted);line-height:1.4}
+  .tblwrap{overflow-x:auto;margin:14px 0 22px;border:1px solid var(--rule);background:var(--surface)}
+  table{border-collapse:collapse;width:100%;font-family:var(--mono);font-size:.84rem;font-variant-numeric:tabular-nums}
+  th,td{padding:9px 12px;text-align:right;border-bottom:1px solid var(--rule-soft);white-space:nowrap}
+  th{font-family:var(--body);font-size:.7rem;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--rule)}
+  th:first-child,td:first-child{text-align:left;white-space:normal;min-width:16ch}
+  tr:last-child td{border-bottom:0}
+  td.bad{color:var(--artifact);font-weight:500}
+  td.good{color:var(--hold);font-weight:500}
+  .caption{font-size:.82rem;color:var(--muted);margin:-12px 0 22px;max-width:70ch}
+  .figure-block{background:var(--surface);border:1px solid var(--rule);padding:18px 18px 10px;margin:16px 0 8px}
+  .figure-block svg{width:100%;height:auto;display:block}
+  .figure-title{font-family:var(--body);font-size:.9rem;font-weight:600;margin:0 0 4px}
+  .figure-sub{font-size:.8rem;color:var(--muted);margin:0 0 10px}
+  svg text{font-family:var(--mono);font-size:11px;fill:var(--muted)}
+  svg text.ink{fill:var(--ink)}
+  svg text.acc{fill:var(--artifact);font-weight:500}
+  svg text.hold{fill:var(--hold);font-weight:500}
+  svg .grid{stroke:var(--rule-soft);stroke-width:1}
+  svg .axis{stroke:var(--rule);stroke-width:1}
+  svg .line-in{stroke:var(--ink);stroke-width:1.8;fill:none}
+  svg .line-out{stroke:var(--artifact);stroke-width:2.2;fill:none}
+  svg .area-in{fill:var(--ink);opacity:.06}
+  svg .area-out{fill:var(--artifact);opacity:.10}
+  svg .bar{fill:var(--muted);opacity:.55}
+  svg .bar.neg{fill:var(--muted);opacity:.35}
+  svg .bar.hi{fill:var(--artifact);opacity:.95}
+  svg .bar.es{fill:var(--ink);opacity:.7}
+  svg .band-win{fill:var(--hold-soft)}
+  svg .band-fut{fill:var(--hold);opacity:.35}
+  svg .band-gap{fill:var(--artifact-soft)}
+  svg .marker{stroke:var(--ink);stroke-width:1.2}
+  svg .dash{stroke:var(--artifact);stroke-width:1;stroke-dasharray:4 4}
+  ul{padding-left:20px;margin:0 0 14px}
+  li{margin:0 0 8px}
+  .rule-callout{border-left:3px solid var(--hold);padding:6px 16px;margin:18px 0 22px;background:var(--surface);max-width:66ch}
+  .rule-callout p{margin:0;font-weight:500}
+  .checks li{margin-bottom:10px}
+  .checks b{font-weight:600}
+  .steps{counter-reset:s;list-style:none;padding:0}
+  .steps li{position:relative;padding-left:0;margin-bottom:12px}
+  code{font-family:var(--mono);font-size:.86em;background:var(--surface);border:1px solid var(--rule-soft);padding:1px 5px}
+  .sources{font-size:.84rem;color:var(--muted);margin-top:36px;padding-top:16px;border-top:1px solid var(--rule)}
+  .sources a{color:var(--muted)}
+  a{color:var(--hold)}
+  a:focus-visible{outline:2px solid var(--hold);outline-offset:2px}
+  @media (max-width:720px){.verdicts{grid-template-columns:1fr}.page{padding:32px 16px 56px}}
+  @media (prefers-reduced-motion:no-preference){.line-in,.line-out{transition:none}}
+</style>
+
+<div class="page">
+  <p class="eyebrow">ES futures research · re-analysis · 2 September 2026</p>
+  <h1>The Head-Start Verdict</h1>
+  <p class="lede">The 76.9% signal was never an edge. A second one fooled two years of data. Both failures point to the same two rules for whatever comes next.</p>
+  <p class="meta">507 ES trading days (Mar 2024 – Apr 2026) · 6,781 SPY days (1999 – Sep 2026) · reproducible with <code>python reanalysis/run_all.py</code></p>
+
+  <div class="verdicts">
+    <div class="tile">
+      <span class="label">The headline, re-scored from the tradeable price</span>
+      <span class="figure"><span>76.9%</span><span class="arrow">becomes</span><span class="bad">52.5%</span></span>
+      <span class="cap">Same 40 best-signal days, entered at 10:00 as futures: mean −0.9 pts. The 64 strong-drift days: −7 pts. No stop level helps.</span>
+    </div>
+    <div class="tile">
+      <span class="label">The new lead, in-sample vs 25 years</span>
+      <span class="figure"><span class="good">t = 2.8</span><span class="arrow">becomes</span><span class="bad">t = 0.4</span></span>
+      <span class="cap">Fade the overnight gap from 10:00. Strong on the ES sample; flat over 6,781 SPY days, 13 of 28 years positive.</span>
+    </div>
+    <div class="tile">
+      <span class="label">Out of sample since the ES data ended</span>
+      <span class="figure"><span class="bad">−10 bp/day</span></span>
+      <span class="cap">SPY, 10 Apr – 2 Sep 2026: 100 days, 42% win, negative in all six months. 2025 was the rule's best year since 1999.</span>
+    </div>
+  </div>
+
+  <section>
+    <p class="eyebrow">Finding one</p>
+    <h2>The head-start fallacy</h2>
+    <div class="prose">
+      <p>The notebook scores a day as a win when the 16:15 close is past the near-money strike in the predicted direction. That strike sits at most 12 points from the open. But the "strong drift" filter only fires when price has already moved more than 0.30% from the open by 10:00 — which on every one of those 64 days means price is already <em>past the strike</em>, by a median of 20 points. A "win" then only requires that price not give the whole head start back.</p>
+    </div>
+
+    <div class="figure-block">
+      <p class="figure-title">What counts as a win, and what actually makes money</p>
+      <p class="figure-sub">Points from the 09:30 open on a typical best-signal day (initial move up, trade is short).</p>
+      <svg viewBox="0 0 900 196" role="img" aria-label="Number line showing the open at zero, the strike at minus twelve, the ten o'clock price at minus thirty-two, and the twenty-point head-start band between them">
+        <rect class="band-win" x="60" y="70" width="520" height="34"></rect>
+        <rect class="band-fut" x="60" y="70" width="290" height="34"></rect>
+        <rect class="band-gap" x="350" y="70" width="230" height="34"></rect>
+        <line class="axis" x1="40" y1="120" x2="860" y2="120"></line>
+        <g>
+          <line class="marker" x1="720" y1="58" x2="720" y2="128"></line>
+          <text class="ink" x="720" y="146" text-anchor="middle">Open · 0</text>
+        </g>
+        <g>
+          <line class="marker" x1="580" y1="58" x2="580" y2="128"></line>
+          <text class="ink" x="580" y="146" text-anchor="middle">Strike · −12</text>
+          <text x="580" y="180" text-anchor="middle">notebook counts a win if the close is left of here</text>
+        </g>
+        <g>
+          <line class="marker" x1="350" y1="58" x2="350" y2="128"></line>
+          <text class="ink" x="350" y="146" text-anchor="middle">10:00 price · −32</text>
+          <text x="350" y="162" text-anchor="middle">a short entered here profits only left of here</text>
+        </g>
+        <text class="acc" x="465" y="56" text-anchor="middle">20-point head start</text>
+        <text x="465" y="40" text-anchor="middle">counted as a win · a loss for the trade</text>
+        <text class="hold" x="200" y="56" text-anchor="middle">both win and profit</text>
+        <text x="860" y="146" text-anchor="end">+</text>
+        <text x="40" y="146" text-anchor="start">−</text>
+      </svg>
+    </div>
+
+    <div class="tblwrap">
+      <table>
+        <thead><tr><th>Prior subset</th><th>N</th><th>Prior win rate</th><th>Past strike at 10:00</th><th>Futures win from 10:00</th><th>Mean pts</th><th>t</th></tr></thead>
+        <tbody>
+          <tr><td>Wide + reversal</td><td>124</td><td>61.3%</td><td>86%</td><td class="bad">50.8%</td><td class="bad">−2.2</td><td>−0.56</td></tr>
+          <tr><td>+ strong drift (&gt; 0.30%)</td><td>64</td><td>70.3%</td><td>100%</td><td class="bad">50.0%</td><td class="bad">−7.0</td><td>−1.08</td></tr>
+          <tr><td>+ non-Q4</td><td>47</td><td>76.6%</td><td>100%</td><td class="bad">51.1%</td><td class="bad">−0.5</td><td>−0.07</td></tr>
+          <tr><td>+ not Thursday (the headline)</td><td>40</td><td>77.5%</td><td>100%</td><td class="bad">52.5%</td><td class="bad">−0.9</td><td>−0.13</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="caption">Day table rebuilt from the raw bars; prior win rates reproduce the documented 60.6 / 69.8 / 76.1 / 76.9% within a few days' difference. Of the 31 "wins" on the headline set, 10 lost money as a futures trade.</p>
+
+    <div class="prose">
+      <p>The same thing shows without any filter. Across all 501 days, the chance the close is still on the 10:00 side of the open climbs to 89% as the 10:00 move grows past 0.50%. The profit measured from the 10:00 price does not climb with it, and none of it is significant.</p>
+    </div>
+    <div class="tblwrap">
+      <table>
+        <thead><tr><th>|10:00 move from open|</th><th>N</th><th>Close on same side as 10:00</th><th>Futures win from 10:00</th><th>Mean pts</th></tr></thead>
+        <tbody>
+          <tr><td>&gt; 0.30%</td><td>133</td><td>76.7%</td><td>52.6%</td><td>+1.4</td></tr>
+          <tr><td>&gt; 0.40%</td><td>78</td><td>82.1%</td><td>55.1%</td><td>+8.5</td></tr>
+          <tr><td>&gt; 0.50%</td><td>46</td><td>89.1%</td><td>58.7%</td><td>+14.5 (t = 1.2)</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="rule-callout"><p>Score a signal from the price you can trade at, never from the open.</p></div>
+
+    <div class="prose">
+      <h3>Two smaller things in the same vein</h3>
+      <ul>
+        <li><b>"Initial direction" was a one-second tick.</b> The day's direction comes from the first bar whose open differs from the 09:30 open — the 09:30:01 tick on 432 days. It agrees with the close direction 55.6% of the time. The 09:35 direction agrees 57.7%: the market continues its first five minutes slightly more often than it reverses, so the premise is mildly wrong-signed. Neither is tradeable from 10:00.</li>
+        <li><b>The calendar filters were mildly lucky.</b> Randomly relabeling the 127 wide-and-reversal days produces a subset at or above 76.9% (N ≥ 35) about 4% of the time under the 24 filters actually searched.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section>
+    <p class="eyebrow">Finding two</p>
+    <h2>What a mirage looks like in your own data</h2>
+    <div class="prose">
+      <p>One new candidate came out of the exploration: at 10:00, trade <em>against</em> the overnight gap, hold to the close, no stop. On the ES sample it earned +5.4 points a day at t = 2.8, was positive in every year and both halves, survived removing the April 2025 tariff week, and passed a sign-flip permutation test across an 18-member threshold family at p below 0.01. Net of costs one MES contract came to about $5,300 a year against a $1,700 drawdown. Every test the notebook knows how to run said yes.</p>
+      <p>The same rule needs only the open, the close, and yesterday's close, so it can be checked on free daily data in seconds.</p>
+    </div>
+
+    <div class="figure-block">
+      <p class="figure-title">Fade the overnight gap, open to close, on SPY — cumulative basis points</p>
+      <p class="figure-sub">Weekly, 15 Mar 2024 – 4 Sep 2026. The ES sample ends 9 Apr 2026; everything after that is out of sample.</p>
+      <svg id="cum" viewBox="0 0 900 320" role="img" aria-label="Cumulative gap-fade return rising to about 4,400 basis points by early 2026, then falling about 1,000 basis points after the ES data ends"></svg>
+    </div>
+    <p class="caption">SPY and ES agree on this rule almost perfectly on the overlapping dates (daily P&amp;L correlation 0.92; +10.2 vs +9.6 bp/day). Nothing in the intraday pipeline was needed to see it.</p>
+
+    <div class="figure-block">
+      <p class="figure-title">The same rule, each year since 1999 — mean basis points per day</p>
+      <p class="figure-sub">SPY, ex-dividend days removed. Overall +0.5 bp/day, t = 0.41.</p>
+      <svg id="yearly" viewBox="0 0 900 300" role="img" aria-label="Bar chart of yearly mean return for the gap fade from 1999 to 2026, hovering around zero with 2025 the tallest bar"></svg>
+    </div>
+    <p class="caption">2025 is the best year of 28 for this rule, and April 2025 alone supplied 55% of that year. The ES sample sits on top of it.</p>
+
+    <div class="prose">
+      <ul class="checks">
+        <li><b>Out of sample.</b> SPY from 10 Apr to 2 Sep 2026: 100 days, 42% win, −10.0 bp/day, t = −1.8, negative in all six months.</li>
+        <li><b>The sample's holes flattered it.</b> On the 43 dates missing from the ES sample inside its own window (holidays, IBKR gaps), the rule lost 12 bp/day.</li>
+        <li><b>Filters do not rescue it.</b> A VIX ≥ 15 filter looks strong on ES (t = 3.3) and is nothing over 25 years (t = 0.3).</li>
+        <li><b>Literature.</b> A 2026 systematic falsification study on MNQ futures reports the gap-fill fade failing at every tested entry time.</li>
+        <li><b>Also empty on this data:</b> entry-time sweep 09:35–15:00, exit sweep, stop sweep (every stop lowers the mean), Nadex framing (nearest strike past the 10:00 price wins 44%), and the published first-half-hour-to-last-half-hour momentum relation (t = −0.6).</li>
+      </ul>
+    </div>
+    <div class="rule-callout"><p>Two years of intraday data cannot tell a regime from an edge. Test every candidate on 25 years of daily data first.</p></div>
+  </section>
+
+  <section>
+    <p class="eyebrow">Pipeline</p>
+    <h2>Two data bugs to fix before trusting another run</h2>
+    <div class="prose">
+      <ul>
+        <li><b>21 days were scored against the previous day's open.</b> The 09:30 open is forward-filled in <code>barsToCleaning.ipynb</code>, so the 07:00–09:15 pre-market bars present for the first 22 days (Mar–Apr 2024) inherit the prior day's open, survive as non-equal rows, and become the day's first row in <code>clean.csv</code>. Fix: set the open per date, not by forward fill.</li>
+        <li><b>Define "initial direction" at a fixed clock time</b> (09:35 or 10:00), not as "the first bar that differs from the open".</li>
+        <li>Bars after 10:00 are sampled roughly every 15 minutes, so any MAE/MFE built from bar highs and lows is a lower bound.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section>
+    <p class="eyebrow">Context</p>
+    <h2>Where the long-history evidence actually points</h2>
+    <div class="tblwrap">
+      <table>
+        <thead><tr><th>SPY 1999 – 2026, 6,781 days</th><th>Mean bp/day</th><th>t</th><th>Cumulative</th><th>1999–09</th><th>2010–19</th><th>2020–26</th></tr></thead>
+        <tbody>
+          <tr><td>Overnight (prior close → open)</td><td class="good">+3.4</td><td class="good">4.02</td><td class="good">+229%</td><td>+3.1</td><td>+3.3</td><td>+4.0</td></tr>
+          <tr><td>Intraday (open → close)</td><td>+0.9</td><td>0.75</td><td>+61%</td><td>−1.8</td><td>+2.2</td><td>+3.4</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="prose">
+      <p>The documented index-level edge is the overnight drift — an unconditional premium with gap risk, not a timing signal, but positive in every sub-period and the exact mirror of this project's intraday-only frame. If the project is ever reopened, that is the half of the day with a 25-year record behind it.</p>
+    </div>
+  </section>
+
+  <section>
+    <p class="eyebrow">Next</p>
+    <h2>What to do with this</h2>
+    <div class="prose">
+      <ol>
+        <li><b>Retire the 76.9% headline and the futures path.</b> Section 20 is moot. Reword the resume line to the honest version: built the pipeline, found the signal, then falsified it with a head-start analysis and a 25-year out-of-sample test. That is the stronger story.</li>
+        <li><b>Adopt a daily-history-first rule.</b> Any candidate is tested on 25 years of SPY or ES daily data (<code>reanalysis/04_spy_25yr_history.py</code> is the template) and passes a selection-adjusted permutation test before any intraday engineering.</li>
+        <li><b>Fix the two pipeline bugs</b> before trusting another run of the notebooks.</li>
+        <li><b>Keep <code>reanalysis/</code> as the template</b> for the next idea. It runs end to end in about three minutes.</li>
+      </ol>
+    </div>
+    <div class="sources">
+      Sources · <a href="https://arxiv.org/pdf/2605.04004">arXiv 2605.04004, Structural Limits of OHLCV-Based Intraday Signals in MNQ Futures</a> · <a href="https://www.newyorkfed.org/medialibrary/media/research/staff_reports/sr917.pdf">NY Fed Staff Report 917, The Overnight Drift</a> · <a href="https://elmwealth.com/night-moves-overnight-drift/">Elm Wealth, Night Moves</a> · Full write-up in <code>reference/exploration-2026-09-02.md</code>.
+    </div>
+  </section>
+</div>
+
+<script>
+(function(){
+  var dates=["2024-03-15","2024-03-22","2024-03-29","2024-04-05","2024-04-12","2024-04-19","2024-04-26","2024-05-03","2024-05-10","2024-05-17","2024-05-24","2024-05-31","2024-06-07","2024-06-14","2024-06-21","2024-06-28","2024-07-05","2024-07-12","2024-07-19","2024-07-26","2024-08-02","2024-08-09","2024-08-16","2024-08-23","2024-08-30","2024-09-06","2024-09-13","2024-09-20","2024-09-27","2024-10-04","2024-10-11","2024-10-18","2024-10-25","2024-11-01","2024-11-08","2024-11-15","2024-11-22","2024-11-29","2024-12-06","2024-12-13","2024-12-20","2024-12-27","2025-01-03","2025-01-10","2025-01-17","2025-01-24","2025-01-31","2025-02-07","2025-02-14","2025-02-21","2025-02-28","2025-03-07","2025-03-14","2025-03-21","2025-03-28","2025-04-04","2025-04-11","2025-04-18","2025-04-25","2025-05-02","2025-05-09","2025-05-16","2025-05-23","2025-05-30","2025-06-06","2025-06-13","2025-06-20","2025-06-27","2025-07-04","2025-07-11","2025-07-18","2025-07-25","2025-08-01","2025-08-08","2025-08-15","2025-08-22","2025-08-29","2025-09-05","2025-09-12","2025-09-19","2025-09-26","2025-10-03","2025-10-10","2025-10-17","2025-10-24","2025-10-31","2025-11-07","2025-11-14","2025-11-21","2025-11-28","2025-12-05","2025-12-12","2025-12-19","2025-12-26","2026-01-02","2026-01-09","2026-01-16","2026-01-23","2026-01-30","2026-02-06","2026-02-13","2026-02-20","2026-02-27","2026-03-06","2026-03-13","2026-03-20","2026-03-27","2026-04-03","2026-04-10","2026-04-17","2026-04-24","2026-05-01","2026-05-08","2026-05-15","2026-05-22","2026-05-29","2026-06-05","2026-06-12","2026-06-19","2026-06-26","2026-07-03","2026-07-10","2026-07-17","2026-07-24","2026-07-31","2026-08-07","2026-08-14","2026-08-21","2026-08-28","2026-09-04"];
+  var cum=[12,18,38,237,167,474,430,261,216,141,257,165,164,317,430,491,592,573,556,388,575,748,634,589,599,614,564,661,692,684,712,792,827,753,564,554,642,568,527,491,275,240,316,373,498,545,601,776,795,645,750,1059,685,658,307,209,2190,2229,1933,2166,2222,2174,2252,2288,2522,2559,2493,2299,2318,2259,2332,2265,2387,2314,2343,2148,2139,2157,2099,2109,2145,2313,2641,2874,2813,2779,2793,2771,2894,2831,2917,2998,3207,3293,3405,3329,3472,3358,3366,3424,3780,3900,3958,4071,4288,4242,4101,4175,4276,4173,4171,4157,4033,3941,3931,3979,3873,3772,3813,3944,3854,3720,3646,3675,3480,3300,3375,3291,3292,3250];
+  var esEnd="2026-04-09";
+  var NS="http://www.w3.org/2000/svg";
+  function el(n,a,t){var e=document.createElementNS(NS,n);for(var k in a)e.setAttribute(k,a[k]);if(t!=null)e.textContent=t;return e;}
+  function toT(s){var p=s.split("-");return Date.UTC(+p[0],+p[1]-1,+p[2]);}
+
+  // ---- cumulative chart
+  (function(){
+    var svg=document.getElementById("cum"); if(!svg)return;
+    var W=900,H=320,L=64,R=20,T=28,B=44;
+    var t0=toT(dates[0]),t1=toT(dates[dates.length-1]);
+    var yMin=0,yMax=4800;
+    function x(s){return L+(toT(s)-t0)/(t1-t0)*(W-L-R);}
+    function y(v){return T+(1-(v-yMin)/(yMax-yMin))*(H-T-B);}
+    [0,1000,2000,3000,4000].forEach(function(v){
+      svg.appendChild(el("line",{class:"grid",x1:L,x2:W-R,y1:y(v),y2:y(v)}));
+      svg.appendChild(el("text",{x:L-8,y:y(v)+4,"text-anchor":"end"},v===0?"0":(v/100).toFixed(0)+"%"));
+    });
+    svg.appendChild(el("line",{class:"axis",x1:L,x2:W-R,y1:y(0),y2:y(0)}));
+    ["2024-07-01","2025-01-01","2025-07-01","2026-01-01","2026-07-01"].forEach(function(d){
+      var lbl=d.slice(5,7)==="01"?d.slice(0,4):"Jul";
+      svg.appendChild(el("text",{x:x(d),y:H-B+18,"text-anchor":"middle"},lbl));
+    });
+    var split=dates.findIndex(function(d){return toT(d)>toT(esEnd);});
+    var inPts=[],outPts=[];
+    dates.forEach(function(d,i){var pt=x(d).toFixed(1)+","+y(cum[i]).toFixed(1);if(i<split)inPts.push(pt);if(i>=split-1)outPts.push(pt);});
+    var base=y(0).toFixed(1);
+    svg.appendChild(el("path",{class:"area-in",d:"M"+x(dates[0]).toFixed(1)+","+base+" L"+inPts.join(" L")+" L"+x(dates[split-1]).toFixed(1)+","+base+" Z"}));
+    svg.appendChild(el("path",{class:"area-out",d:"M"+x(dates[split-1]).toFixed(1)+","+base+" L"+outPts.join(" L")+" L"+x(dates[dates.length-1]).toFixed(1)+","+base+" Z"}));
+    svg.appendChild(el("polyline",{class:"line-in",points:inPts.join(" ")}));
+    svg.appendChild(el("polyline",{class:"line-out",points:outPts.join(" ")}));
+    var xe=x(esEnd);
+    svg.appendChild(el("line",{class:"dash",x1:xe,x2:xe,y1:T,y2:y(0)}));
+    svg.appendChild(el("text",{class:"acc",x:xe-6,y:T+12,"text-anchor":"end"},"ES data ends · 9 Apr 2026"));
+    svg.appendChild(el("text",{class:"ink",x:x("2025-04-04")-10,y:y(2190)-14,"text-anchor":"end"},"April 2025 · +1,700 bp in one month →"));
+    svg.appendChild(el("text",{class:"acc",x:x(dates[dates.length-1])-4,y:y(cum[cum.length-1])+34,"text-anchor":"end"},"−1,000 bp since"));
+    svg.appendChild(el("text",{x:L,y:H-B+36,"text-anchor":"start"},"cumulative return of the rule, % of price · in-sample in ink, out-of-sample in red"));
+  })();
+
+  // ---- yearly bars
+  (function(){
+    var svg=document.getElementById("yearly"); if(!svg)return;
+    var yr={"1999":3.3,"2000":11.6,"2001":7.5,"2002":-4.9,"2003":10.1,"2004":8.0,"2005":1.7,"2006":-0.7,"2007":-6.5,"2008":0.4,"2009":-5.1,"2010":-2.3,"2011":-9.6,"2012":5.6,"2013":-2.0,"2014":-8.5,"2015":-0.3,"2016":0.4,"2017":1.2,"2018":-0.1,"2019":0.1,"2020":-3.6,"2021":-3.6,"2022":-3.5,"2023":5.3,"2024":-2.6,"2025":12.4,"2026":-0.7};
+    var keys=Object.keys(yr);
+    var W=900,H=300,L=56,R=16,T=26,B=46;
+    var yMin=-12,yMax=14;
+    var n=keys.length,slot=(W-L-R)/n,bw=slot*0.62;
+    function y(v){return T+(1-(v-yMin)/(yMax-yMin))*(H-T-B);}
+    [-10,-5,0,5,10].forEach(function(v){
+      svg.appendChild(el("line",{class:"grid",x1:L,x2:W-R,y1:y(v),y2:y(v)}));
+      svg.appendChild(el("text",{x:L-8,y:y(v)+4,"text-anchor":"end"},(v>0?"+":"")+v));
+    });
+    svg.appendChild(el("line",{class:"axis",x1:L,x2:W-R,y1:y(0),y2:y(0)}));
+    keys.forEach(function(k,i){
+      var v=yr[k],x0=L+i*slot+(slot-bw)/2;
+      var cls="bar"+(v<0?" neg":"")+(k==="2025"?" hi":"")+((k==="2024"||k==="2026")?" es":"");
+      svg.appendChild(el("rect",{class:cls,x:x0.toFixed(1),y:Math.min(y(v),y(0)).toFixed(1),width:bw.toFixed(1),height:Math.abs(y(v)-y(0)).toFixed(1)}));
+      if(i%3===0||k==="2025"||k==="2026"){
+        svg.appendChild(el("text",{x:(x0+bw/2).toFixed(1),y:H-B+16,"text-anchor":"middle"},k.slice(2)));
+      }
+    });
+    var i25=keys.indexOf("2025"),x25=L+i25*slot+slot/2;
+    svg.appendChild(el("text",{class:"acc",x:x25,y:y(12.4)-8,"text-anchor":"middle"},"2025 · +12.4"));
+    var iA=keys.indexOf("2024"),iB=keys.indexOf("2026");
+    var xa=L+iA*slot+(slot-bw)/2,xb=L+iB*slot+(slot-bw)/2+bw;
+    svg.appendChild(el("line",{class:"marker",x1:xa,x2:xb,y1:H-B+28,y2:H-B+28}));
+    svg.appendChild(el("text",{class:"ink",x:(xa+xb)/2,y:H-B+42,"text-anchor":"middle"},"ES sample"));
+    svg.appendChild(el("text",{x:L,y:T-10,"text-anchor":"start"},"mean bp per day, year by year (two-digit year labels)"));
+  })();
+})();
+</script>
+
+</html>
